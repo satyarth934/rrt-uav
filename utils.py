@@ -5,7 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plotPoints(points_list, subplot_ax):
+def plotPoint(point, subplot_ax, radius=0.2, color='black'):
+	dot = plt.Circle(point, radius=radius, color=color)
+	subplot_ax.add_artist(dot)
+
+
+def plotPoints(points_list, subplot_ax, radius=0.2, color='black'):
 	for point in points_list:
-		dot = plt.Circle(point, radius=0.2, color='black')
-		subplot_ax.add_artist(dot)
+		plotPoint(point, subplot_ax, radius, color)
+		# dot = plt.Circle(point, radius=radius, color=color)
+		# subplot_ax.add_artist(dot)
