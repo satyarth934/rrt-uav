@@ -13,7 +13,6 @@ import node
 import utils 
 import obstacles as obs
 
-
 X_LIM = (-5,5)
 Y_LIM = (-5,5)
 
@@ -23,6 +22,7 @@ GOAL_REACH_THRESH = 0.5
 
 DRONE_RADIUS = 0.2
 
+import path_pruning
 
 def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
 	step_size = robot_radius * 2
@@ -117,10 +117,25 @@ def main():
 
 	plt.ion()
 	rrt_path, _ = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=ax)
+	# print(rrt_path)
 	if rrt_path is not None:
 		utils.plotPath(rrt_path, plotter=ax)
-	plt.ioff()
+	# plt.ioff()
+	# plt.show()
+
+	path_co = []
+	for n in rrt_path:
+		path_co.append(n.current_coords)
+	path_co = np.array(path_co)
+
+	print(path_co.shape)
+	pr_path=path_pruning.prunedPath(path=path_co)
+	pr_path= np.array(pr_path)
+	plt.plot(path_co[:,0],path_co[:,1],'g')
+	plt.plot(pr_path[:,0],pr_path[:,1],'r')
+	
 	plt.show()
+	plt.ioff()
 
 
 if __name__ == '__main__':

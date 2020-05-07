@@ -99,7 +99,7 @@ def testMain():
     fig, ax = plt.subplots()
     ax.set(xlim=(-5, 5), ylim=(-5, 5))
     ax.set_aspect('equal')
-    # ax.plot([x], [y], color="black", marker="+", markersize=3)
+    #ax.plot([x], [y], color="black", marker="+", markersize=3)
 
     # print(withinObstacleSpace((x, y), 0.105, 0.2, plotter=ax))
     generateMap(ax)
