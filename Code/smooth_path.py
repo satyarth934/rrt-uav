@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 sys.dont_write_bytecode = True
 
+import main
 import utils
 import obstacles as obs
 import bezier_curves as bc
@@ -38,14 +39,8 @@ def bezierCurveTesting0():
 	plt.show()
 
 
-def bezierCurveTesting1(animate=False, write=False):
+def bezierCurveTesting1(point_list, animate=False, write=False):
 	write_path = '../Results/rrt_prune_smooth_frames'
-
-	# point_list = np.random.randint(0, 100, (10, 2))
-	# print(point_list)
-	# point_list.sort(axis=0)
-	# print(point_list)
-	point_list = np.load('rrt_prune_smooth_path_coords.npy')
 
 	fig, ax = plt.subplots()
 	fig.gca().set_aspect('equal', adjustable='box')
@@ -183,9 +178,43 @@ def bezierCurveTesting1(animate=False, write=False):
 		plt.savefig(write_path + '/%s.png' % (str(write_itr)))
 	##############
 
+	return (BC_x, BC_y)
+
+
+def findClosestWayPoint(ref_point, point_list):
+	rx, ry = ref_point
+
+	min_dist = 99999
+	closest_wp_idx = -1
+
+	for i in range(len(point_list)):
+		dist = utils.euclideanDistance(point_1=ref_point, point_2=point_list[i])
+		if dist < min_dist:
+			min_dist = dist
+			closest_wp_idx = i
+
+	return (min_dist, closest_wp_idx)
+
 
 def main():
-	bezierCurveTesting1(animate=True, write=True)
+	# point_list = np.random.randint(0, 100, (10, 2))
+	# print(point_list)
+	# point_list.sort(axis=0)
+	# print(point_list)
+	point_list = np.load('rrt_prune_smooth_path_coords.npy')
+
+	(BC_x, BC_y) = bezierCurveTesting1(point_list, animate=True, write=True)
+
+	for bcx, bcy in zip(BC_x, BC_y):
+		if obs.withinObstacleSpace(point=(bcx, bcy), radius=main.DRONE_RADIUS, clearance=(main.DRONE_RADIUS / 2)):
+			_, closest_wp_idx = findClosestWayPoint(ref_point=(bcx, bcy), point_list=point_list)
+			if closest_wp_idx > 0:
+				prev_cwp = point_list[closest_wp_idx - 1]
+
+			if closest_wp_idx < len(point_list) - 1:
+				next_cwp = point_list[closest_wp_idx + 1]
+
+			if 
 
 
 if __name__ == '__main__':

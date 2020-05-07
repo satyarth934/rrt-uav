@@ -17,20 +17,32 @@ def plotPoints(points_list, subplot_ax, radius=0.2, color='black'):
 		# subplot_ax.add_artist(dot)
 
 
-def plotPath(rrt_path, plotter=plt, itr=-1):
-	plotPoint(point=rrt_path[0].getXYCoords(), subplot_ax=plotter, radius=0.15, color='cyan')
-	plotPoint(point=rrt_path[-1].getXYCoords(), subplot_ax=plotter, radius=0.15, color='magenta')
-	prev_node = rrt_path[0]
-	for node in rrt_path:
-		pn_x, pn_y = prev_node.getXYCoords()
-		cn_x, cn_y = node.getXYCoords()
-		plotter.plot([pn_x, cn_x], [pn_y, cn_y], color='pink', linewidth=3)
+def plotPath(path, plotter=plt, itr=-1, path_color='pink'):
+	try:
+		plotPoint(point=path[0].getXYCoords(), subplot_ax=plotter, radius=0.15, color='cyan')
+		plotPoint(point=path[-1].getXYCoords(), subplot_ax=plotter, radius=0.15, color='magenta')
+	except Exception:
+		plotPoint(point=path[0], subplot_ax=plotter, radius=0.15, color='cyan')
+		plotPoint(point=path[-1], subplot_ax=plotter, radius=0.15, color='magenta')
+
+	prev_node = path[0]
+	for node in path:
+		try:
+			pn_x, pn_y = prev_node.getXYCoords()
+			cn_x, cn_y = node.getXYCoords()
+		except Exception:
+			pn_x, pn_y = prev_node
+			cn_x, cn_y = node
+
+		plotter.plot([pn_x, cn_x], [pn_y, cn_y], color=path_color, linewidth=3)
 
 		if itr > -1:
-			plt.savefig('./frames/' + str(itr) + '.png')
+			plt.savefig('./frames/%04d.png' % (itr))
 			itr += 1
 
 		prev_node = node
+
+	return itr
 
 
 # points in x,y format
