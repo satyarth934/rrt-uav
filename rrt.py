@@ -29,16 +29,16 @@ def getRandomNode(x_lim, y_lim, curr_node, goal_node, goal_probability=0.5):
 
 		if (gn_y - cn_y) > 0:
 			y_lim_low = cn_y
-			y_lim_high = y_lim[1]
+			y_lim_high = gn_y + ((y_lim[1] - gn_y) / 3)
 		else:
-			y_lim_low = y_lim[0]
+			y_lim_low = gn_y - ((gn_y - y_lim[0]) / 3)
 			y_lim_high = cn_y
 
 		if (gn_x - cn_x) > 0:
 			x_lim_low = cn_x
-			x_lim_high = x_lim[1]
+			x_lim_high = gn_x + ((x_lim[1] - gn_x) / 3)
 		else:
-			x_lim_low = x_lim[0]
+			x_lim_low = gn_x - ((gn_x - x_lim[0]) / 3)
 			x_lim_high = cn_x
 
 	rn_x = np.random.uniform(low=x_lim_low, high=x_lim_high)
