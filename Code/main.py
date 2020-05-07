@@ -37,7 +37,7 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
 
 	itr = 0
 	while (not utils.sameRegion(step_node, goal_node, GOAL_REACH_THRESH)) and (itr < MAX_ITER):
-		print("Iteration number:", itr)
+		# print("Iteration number:", itr)
 		itr += 1
 
 		# get random node in the direction of the goal node 40% of the times.
@@ -76,12 +76,10 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
 
 		rrt_nodes.update({step_node.getXYCoords(): step_node})
 
-		# rand_node = rrt.getRandomNode(x_lim=X_LIM, y_lim=Y_LIM, curr_node=start_node, goal_node=goal_node, goal_probability=0.4)
-
-		# closest_node, _ = rrt.findClosestNode(rrt_nodes, rand_node)
-
-		plt.show()
-		plt.pause(0.05)
+		if plotter is not None:
+			plt.show()
+			plt.pause(0.05)
+			plt.savefig('./frames/' + str(itr) + '.png')
 
 	# Reached Goal
 	if utils.sameRegion(step_node, goal_node, GOAL_REACH_THRESH):
@@ -97,9 +95,9 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
 
 		print("path:", len(path), "rrt_nodes:", len(rrt_nodes))
 
-		return (path, rrt_nodes)
+		return (path, rrt_nodes, itr)
 
-	return (None, None)
+	return (None, None, None)
 
 
 def main():
@@ -116,12 +114,16 @@ def main():
 	obs.generateMap(ax)
 
 	plt.ion()
-	rrt_path, _ = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=ax)
+	rrt_path, _, itr = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=ax)
 	if rrt_path is not None:
-		utils.plotPath(rrt_path, plotter=ax)
+		utils.plotPath(rrt_path, plotter=ax, itr=itr)
 	plt.ioff()
 	plt.show()
 
+	rrt_path_coords = utils.convertNodeList2CoordList(node_list=rrt_path)
+
+	np.save(file='rrt_path_nodes.npy', arr=rrt_path)
+	np.save(file='rrt_path_coords.npy', arr=rrt_path_coords)
 
 if __name__ == '__main__':
 	main()

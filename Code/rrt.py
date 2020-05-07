@@ -107,3 +107,7 @@ def backtrack(rrt_nodes, goal_node):
 	path.insert(0, temp_node)
 
 	return path
+
+
+def prunePath(path_list):
+	pass

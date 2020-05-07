@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 sys.dont_write_bytecode = True
 
 import utils
+import obstacles as obs
 import bezier_curves as bc
 
 
@@ -37,19 +38,28 @@ def bezierCurveTesting0():
 	plt.show()
 
 
-def bezierCurveTesting1(animate=False):
-	point_list = np.random.randint(0, 100, (10, 2))
+def bezierCurveTesting1(animate=False, write=False):
+	# point_list = np.random.randint(0, 100, (10, 2))
 	# print(point_list)
 	# point_list.sort(axis=0)
 	# print(point_list)
+	point_list = np.load('../Results/rrt_path_coords.npy')
 
 	fig, ax = plt.subplots()
-	ax.set_xlim(-1, 110)
-	ax.set_ylim(-1, 110)
+	fig.gca().set_aspect('equal', adjustable='box')
+	ax.set_xlim(-6, 6)
+	ax.set_ylim(-6, 6)
 
-	utils.plotPoints(point_list, ax, color='black')
-	utils.plotPoint(point_list[0], ax, radius=0.4, color='cyan') 		# start
-	utils.plotPoint(point_list[-1], ax, radius=0.4, color='magenta') 	# end
+	obs.generateMap(plotter=ax)
+
+	utils.plotPoints(point_list, ax, radius=0.04, color='black')
+	utils.plotPoint(point_list[0], ax, radius=0.06, color='cyan') 		# start
+	utils.plotPoint(point_list[-1], ax, radius=0.06, color='magenta') 	# end
+
+	if write:
+		write_itr = 0
+		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		write_itr += 1
 
 	if animate:
 		plt.ion()
@@ -82,12 +92,17 @@ def bezierCurveTesting1(animate=False):
 
 	# Animation
 	if animate:
-		utils.plotPoints([P0, P1, P2, P3], ax, color='red')
+		utils.plotPoints([P0, P1, P2, P3], ax, radius=0.04, color='red')
 		plt.plot(bc_x, bc_y, color='green')
 		plt.show()
 		plt.pause(1)
 
-		utils.plotPoints([P0, P1, P2, P3], ax, color='yellow')
+	if write:
+		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		write_itr += 1
+
+	if animate:
+		utils.plotPoints([P0, P1, P2, P3], ax, radius=0.04, color='yellow')
 	##############
 
 	# Handling the rest of the points, leaving out the last 1 or 2 points for the end
@@ -107,12 +122,17 @@ def bezierCurveTesting1(animate=False):
 
 		# Animation
 		if animate:
-			utils.plotPoints([P0, P1, P2, P3], ax, color='red')
+			utils.plotPoints([P0, P1, P2, P3], ax, radius=0.04, color='red')
 			plt.plot(bc_x, bc_y, color='green')
 			plt.show()
 			plt.pause(1)
 
-			utils.plotPoints([P0, P1, P2, P3], ax, color='yellow')
+		if write:
+			plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+			write_itr += 1
+
+		if animate:
+			utils.plotPoints([P0, P1, P2, P3], ax, radius=0.04, color='yellow')
 		##############
 
 	# Ending Curve
@@ -132,12 +152,17 @@ def bezierCurveTesting1(animate=False):
 
 	# Animation
 	if animate:
-		utils.plotPoints([P0, P1, P2, P3], ax, color='red')
+		utils.plotPoints([P0, P1, P2, P3], ax, radius=0.04, color='red')
 		plt.plot(bc_x, bc_y, color='green')
 		plt.show()
 		plt.pause(1)
 
-		utils.plotPoints([P0, P1, P2, P3], ax, color='yellow')
+	if write:
+		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		write_itr += 1
+
+	if animate:
+		utils.plotPoints([P0, P1, P2, P3], ax, radius=0.04, color='yellow')
 	##############
 
 	# Animation
@@ -147,11 +172,14 @@ def bezierCurveTesting1(animate=False):
 		plt.plot(BC_x, BC_y, color='green')
 
 	plt.show()
+
+	if write:
+		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
 	##############
 
 
 def main():
-	bezierCurveTesting1(animate=True)
+	bezierCurveTesting1(animate=True, write=True)
 
 
 if __name__ == '__main__':

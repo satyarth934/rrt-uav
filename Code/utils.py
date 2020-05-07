@@ -17,7 +17,7 @@ def plotPoints(points_list, subplot_ax, radius=0.2, color='black'):
 		# subplot_ax.add_artist(dot)
 
 
-def plotPath(rrt_path, plotter=plt):
+def plotPath(rrt_path, plotter=plt, itr=0):
 	plotPoint(point=rrt_path[0].getXYCoords(), subplot_ax=plotter, radius=0.15, color='cyan')
 	plotPoint(point=rrt_path[-1].getXYCoords(), subplot_ax=plotter, radius=0.15, color='magenta')
 	prev_node = rrt_path[0]
@@ -25,6 +25,9 @@ def plotPath(rrt_path, plotter=plt):
 		pn_x, pn_y = prev_node.getXYCoords()
 		cn_x, cn_y = node.getXYCoords()
 		plotter.plot([pn_x, cn_x], [pn_y, cn_y], color='pink', linewidth=3)
+
+		plt.savefig('./frames/' + str(itr) + '.png')
+		itr += 1
 
 		prev_node = node
 
@@ -36,3 +39,7 @@ def euclideanDistance(point_1, point_2):
 
 def sameRegion(node1, node2, dist_thresh):
 	return (euclideanDistance(node1.getXYCoords(), node2.getXYCoords()) < dist_thresh)
+
+
+def convertNodeList2CoordList(node_list):
+	return [node.getXYCoords() for node in node_list]
