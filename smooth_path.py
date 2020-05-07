@@ -38,7 +38,7 @@ def bezierCurveTesting0():
 
 
 def bezierCurveTesting1(animate=False):
-	point_list = np.random.randint(0, 100, (50, 2))
+	point_list = np.random.randint(0, 100, (10, 2))
 	# print(point_list)
 	# point_list.sort(axis=0)
 	# print(point_list)
@@ -151,7 +151,7 @@ def bezierCurveTesting1(animate=False):
 
 
 def main():
-	bezierCurveTesting1(animate=False)
+	bezierCurveTesting1(animate=True)
 
 
 if __name__ == '__main__':
