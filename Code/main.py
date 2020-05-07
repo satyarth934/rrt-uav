@@ -9,8 +9,8 @@ sys.dont_write_bytecode = True
 
 import rrt
 import node
-# import univ
 import utils 
+import path_pruning
 import obstacles as obs
 
 
@@ -24,7 +24,7 @@ GOAL_REACH_THRESH = 0.5
 DRONE_RADIUS = 0.2
 
 
-def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
+def rrtPlannedPath(start_node, goal_node, robot_radius, plotter, write=False):
 	step_size = robot_radius * 2
 
 	# rrt_nodes = [start_node]
@@ -67,10 +67,10 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
 			continue
 
 		if plotter is not None:
-			utils.plotPoint(step_node.getXYCoords(), plotter, radius=0.04, color='green')
+			utils.plotPoint(step_node.getXYCoords(), plotter, radius=0.04, color='lime')
 			cn_x, cn_y = closest_node.getXYCoords()
 			sn_x, sn_y = step_node.getXYCoords()
-			plotter.plot([cn_x, sn_x], [cn_y, sn_y], color='green')
+			plotter.plot([cn_x, sn_x], [cn_y, sn_y], color='lime')
 			# plt.show()
 			# plt.pause(0.5)
 
@@ -79,6 +79,8 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter):
 		if plotter is not None:
 			plt.show()
 			plt.pause(0.05)
+
+		if write:
 			plt.savefig('./frames/' + str(itr) + '.png')
 
 	# Reached Goal
@@ -114,16 +116,34 @@ def main():
 	obs.generateMap(ax)
 
 	plt.ion()
-	rrt_path, _, itr = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=ax)
+
+	rrt_path, _, itr = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=ax, write=True)
+	# print(rrt_path)
 	if rrt_path is not None:
-		utils.plotPath(rrt_path, plotter=ax, itr=itr)
+		utils.plotPath(rrt_path, plotter=ax)
+	# plt.ioff()
+	# plt.show()
+
+	# Pruning
+	path_co = np.array(utils.convertNodeList2CoordList(rrt_path))
+
+	print(path_co.shape)
+	rrt_prune_smooth_path_coords=path_pruning.prunedPath(path=path_co, radius=DRONE_RADIUS, clearance=(DRONE_RADIUS/2))
+	rrt_prune_smooth_path_coords= np.array(rrt_prune_smooth_path_coords)
+	plt.plot(path_co[:,0],path_co[:,1],'green')
+	plt.plot(rrt_prune_smooth_path_coords[:,0],rrt_prune_smooth_path_coords[:,1],'cyan')
+	
 	plt.ioff()
 	plt.show()
+
+	itr += 1
+	plt.savefig('./frames/' + str(itr) + '.png')
 
 	rrt_path_coords = utils.convertNodeList2CoordList(node_list=rrt_path)
 
 	np.save(file='rrt_path_nodes.npy', arr=rrt_path)
 	np.save(file='rrt_path_coords.npy', arr=rrt_path_coords)
+	np.save(file='rrt_prune_smooth_path_coords.npy', arr=rrt_prune_smooth_path_coords)
 
 if __name__ == '__main__':
 	main()
