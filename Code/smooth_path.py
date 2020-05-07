@@ -39,11 +39,13 @@ def bezierCurveTesting0():
 
 
 def bezierCurveTesting1(animate=False, write=False):
+	write_path = '../Results/rrt_prune_smooth_frames'
+
 	# point_list = np.random.randint(0, 100, (10, 2))
 	# print(point_list)
 	# point_list.sort(axis=0)
 	# print(point_list)
-	point_list = np.load('../Results/rrt_path_coords.npy')
+	point_list = np.load('rrt_prune_smooth_path_coords.npy')
 
 	fig, ax = plt.subplots()
 	fig.gca().set_aspect('equal', adjustable='box')
@@ -52,13 +54,13 @@ def bezierCurveTesting1(animate=False, write=False):
 
 	obs.generateMap(plotter=ax)
 
-	utils.plotPoints(point_list, ax, radius=0.04, color='black')
+	utils.plotPoints(point_list, ax, radius=0.04, color='black')		# all points
 	utils.plotPoint(point_list[0], ax, radius=0.06, color='cyan') 		# start
 	utils.plotPoint(point_list[-1], ax, radius=0.06, color='magenta') 	# end
 
 	if write:
 		write_itr = 0
-		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		plt.savefig(write_path + '/%s.png' % (str(write_itr)))
 		write_itr += 1
 
 	if animate:
@@ -98,7 +100,7 @@ def bezierCurveTesting1(animate=False, write=False):
 		plt.pause(1)
 
 	if write:
-		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		plt.savefig(write_path + '/%s.png' % (str(write_itr)))
 		write_itr += 1
 
 	if animate:
@@ -107,6 +109,10 @@ def bezierCurveTesting1(animate=False, write=False):
 
 	# Handling the rest of the points, leaving out the last 1 or 2 points for the end
 	point_idx = 4
+	if point_idx >= len(point_list):
+		plt.ioff()
+		plt.show()
+		return
 	while point_idx + 2 < len(point_list):
 		P0 = P2
 		P1 = P3
@@ -128,7 +134,7 @@ def bezierCurveTesting1(animate=False, write=False):
 			plt.pause(1)
 
 		if write:
-			plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+			plt.savefig(write_path + '/%s.png' % (str(write_itr)))
 			write_itr += 1
 
 		if animate:
@@ -158,7 +164,7 @@ def bezierCurveTesting1(animate=False, write=False):
 		plt.pause(1)
 
 	if write:
-		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		plt.savefig(write_path + '/%s.png' % (str(write_itr)))
 		write_itr += 1
 
 	if animate:
@@ -174,7 +180,7 @@ def bezierCurveTesting1(animate=False, write=False):
 	plt.show()
 
 	if write:
-		plt.savefig('../Results/rrt_smooth_frames/%s.png' % (str(write_itr)))
+		plt.savefig(write_path + '/%s.png' % (str(write_itr)))
 	##############
 
 

@@ -17,7 +17,7 @@ def plotPoints(points_list, subplot_ax, radius=0.2, color='black'):
 		# subplot_ax.add_artist(dot)
 
 
-def plotPath(rrt_path, plotter=plt, itr=0):
+def plotPath(rrt_path, plotter=plt, itr=-1):
 	plotPoint(point=rrt_path[0].getXYCoords(), subplot_ax=plotter, radius=0.15, color='cyan')
 	plotPoint(point=rrt_path[-1].getXYCoords(), subplot_ax=plotter, radius=0.15, color='magenta')
 	prev_node = rrt_path[0]
@@ -26,8 +26,9 @@ def plotPath(rrt_path, plotter=plt, itr=0):
 		cn_x, cn_y = node.getXYCoords()
 		plotter.plot([pn_x, cn_x], [pn_y, cn_y], color='pink', linewidth=3)
 
-		plt.savefig('./frames/' + str(itr) + '.png')
-		itr += 1
+		if itr > -1:
+			plt.savefig('./frames/' + str(itr) + '.png')
+			itr += 1
 
 		prev_node = node
 
