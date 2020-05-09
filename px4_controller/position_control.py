@@ -175,11 +175,11 @@ class MavrosOffboardPosctlTest(MavrosTestCommon):
         # positions = ((0, 0, 0), (50, 50, 20), (50, -50, 20), (-50, -50, 20),
         #              (0, 0, 20))
 
-        positions = np.load('/home/sandeep/px4_ws/src/px4_controller/rrt-uav/Results/final_rrt_prune_smooth_path_coords.npy',allow_pickle=True)
+        positions = np.load('/home/sandeep/px4_ws/src/px4_controller/rrt-uav/Results/rrt_path_coords.npy',allow_pickle=True)
 
-        positions = [(x+3,y,5) for x,y in positions]
+        # positions = [(x+3,y,5) for x,y in positions]
 
-        # positions = ((-2.5,-4,5),(-3.5, 1.5,5), (5.5,1.8,5),(6,4,5))
+        # positions = ((-2.5, -4, 10), (-2.5,-4,10),(2.5,0,10),(2.5,0,10),(6.5,4.5,10),(6.5,4.5,10))
         # positions = ((0, 0, 0),(0,0,5),(0,0,5),(0,5,5),(0,5,5),(0,5,0),(0,0,1),(0,0,0))
 
         for i in xrange(len(positions)):
