@@ -175,7 +175,7 @@ class MavrosOffboardPosctlTest(MavrosTestCommon):
         # positions = ((0, 0, 0), (50, 50, 20), (50, -50, 20), (-50, -50, 20),
         #              (0, 0, 20))
 
-        positions = np.load('/home/sandeep/px4_ws/src/px4_controller/rrt-uav/Results/rrt_path_coords.npy',allow_pickle=True)
+        positions = np.load('/home/sandeep/px4_ws/src/px4_controller/rrt_pruning_smoothing/Results/rrt_path_coords.npy',allow_pickle=True)
 
         # positions = [(x+3,y,5) for x,y in positions]
 
