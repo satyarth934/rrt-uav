@@ -9,14 +9,9 @@ sys.dont_write_bytecode = True
 
 import rrt
 import node
+# import univ
 import utils 
-import path_pruning
 import obstacles as obs
-
-import rospkg 
-import rospy
-from gazebo_msgs.msg import ModelState 
-from gazebo_msgs.srv import SetModelState
 
 X_LIM = (-5,5)
 Y_LIM = (-5,5)
@@ -25,7 +20,7 @@ MAX_ITER = 5000
 STEP_SIZE = 0.1
 GOAL_REACH_THRESH = 0.5	
 
-DRONE_RADIUS = 0.5
+DRONE_RADIUS = 0.2
 
 
 def rrtPlannedPath(start_node, goal_node, robot_radius, plotter, write=False):
@@ -71,10 +66,10 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter, write=False):
 			continue
 
 		if plotter is not None:
-			utils.plotPoint(step_node.getXYCoords(), plotter, radius=0.04, color='lime')
+			utils.plotPoint(step_node.getXYCoords(), plotter, radius=0.04, color='green')
 			cn_x, cn_y = closest_node.getXYCoords()
 			sn_x, sn_y = step_node.getXYCoords()
-			plotter.plot([cn_x, sn_x], [cn_y, sn_y], color='lime')
+			plotter.plot([cn_x, sn_x], [cn_y, sn_y], color='green')
 			# plt.show()
 			# plt.pause(0.5)
 
@@ -107,25 +102,8 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter, write=False):
 
 
 def main():
-
 	start_node = node.Node(current_coords=(-4, -4), parent_coords=None, distance=0)
 	goal_node = node.Node(current_coords=(4, 4), parent_coords=None, distance=0)
-
-	start1 = start_node.getXYCoords()
-	quat = [0,0,0,1]
-	state_msg = ModelState()
-	state_msg.model_name = 'iris'
-	state_msg.pose.position.x = start1[0]
-	state_msg.pose.position.y = start1[1]
-	state_msg.pose.position.z = 0
-	state_msg.pose.orientation.x = quat[0]
-	state_msg.pose.orientation.y = quat[1]
-	state_msg.pose.orientation.z = quat[2]
-	state_msg.pose.orientation.w = quat[3]
-
-	set_state = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-	resp = set_state( state_msg )
-
 
 	fig, ax = plt.subplots()
 	ax.set_xlim(-6, 6)
@@ -137,40 +115,16 @@ def main():
 	obs.generateMap(ax)
 
 	plt.ion()
-
-	rrt_path, _, itr = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=None, write=False)
-	itr = 0
-	# plt.savefig(('./frames/%04d.png' % (itr))); itr += 1
-	# print(rrt_path)
+	rrt_path, _, itr = rrtPlannedPath(start_node, goal_node, robot_radius=DRONE_RADIUS, plotter=ax, write=False)
 	if rrt_path is not None:
-		itr = utils.plotPath(rrt_path, plotter=ax, itr=-1, path_color='black'); itr += 1
-	# plt.ioff()
-	# plt.show()
-
-	# Pruning
-	path_co = np.array(utils.convertNodeList2CoordList(rrt_path))
-
-	print(path_co.shape)
-	rrt_prune_path_coords=path_pruning.prunedPath(path=path_co, radius=DRONE_RADIUS, clearance=(DRONE_RADIUS/2))
-	rrt_prune_path_coords= np.array(rrt_prune_path_coords[::-1])
-	# plt.plot(path_co[:,0],path_co[:,1],'green')
-	# plt.plot(rrt_prune_path_coords[:,0],rrt_prune_path_coords[:,1],'cyan')
-	# if path_co is not None:
-	# 	utils.plotPath(path_co, plotter=ax, itr=itr, path_color='black')
-	if rrt_prune_path_coords is not None:
-		itr = utils.plotPath(rrt_prune_path_coords, plotter=ax, itr=-1, path_color='cyan'); itr += 1
-
+		utils.plotPath(rrt_path, plotter=ax)
 	plt.ioff()
-	# plt.show()
+	plt.show()
 
-	# plt.savefig(('./frames/%04d.png' % (itr))); itr += 1
+	# rrt_path_coords = utils.convertNodeList2CoordList(node_list=rrt_path)
 
-	np.save(file='final_rrt_path_nodes.npy', arr=rrt_path)
-	
-	rrt_path_coords = utils.convertNodeList2CoordList(node_list=rrt_path)
-	np.save(file='final_rrt_path_coords.npy', arr=rrt_path_coords)
-	
-	np.save(file='final_rrt_prune_path_coords.npy', arr=rrt_prune_path_coords)
+	# np.save(file='rrt_path_nodes.npy', arr=rrt_path)
+	# np.save(file='rrt_path_coords.npy', arr=rrt_path_coords)
 
 if __name__ == '__main__':
 	main()
