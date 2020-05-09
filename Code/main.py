@@ -103,6 +103,7 @@ def rrtPlannedPath(start_node, goal_node, robot_radius, plotter, write=False):
 
 
 def main():
+
 	start_node = node.Node(current_coords=(-4, -4), parent_coords=None, distance=0)
 	goal_node = node.Node(current_coords=(4, 4), parent_coords=None, distance=0)
 
@@ -122,7 +123,7 @@ def main():
 	# plt.savefig(('./frames/%04d.png' % (itr))); itr += 1
 	# print(rrt_path)
 	if rrt_path is not None:
-		itr = utils.plotPath(rrt_path, plotter=ax, itr=itr, path_color='black'); itr += 1
+		itr = utils.plotPath(rrt_path, plotter=ax, itr=-1, path_color='black'); itr += 1
 	# plt.ioff()
 	# plt.show()
 
@@ -130,25 +131,26 @@ def main():
 	path_co = np.array(utils.convertNodeList2CoordList(rrt_path))
 
 	print(path_co.shape)
-	rrt_prune_smooth_path_coords=path_pruning.prunedPath(path=path_co, radius=DRONE_RADIUS, clearance=(DRONE_RADIUS/2))
-	rrt_prune_smooth_path_coords= np.array(rrt_prune_smooth_path_coords[::-1])
+	rrt_prune_path_coords=path_pruning.prunedPath(path=path_co, radius=DRONE_RADIUS, clearance=(DRONE_RADIUS/2))
+	rrt_prune_path_coords= np.array(rrt_prune_path_coords[::-1])
 	# plt.plot(path_co[:,0],path_co[:,1],'green')
-	# plt.plot(rrt_prune_smooth_path_coords[:,0],rrt_prune_smooth_path_coords[:,1],'cyan')
+	# plt.plot(rrt_prune_path_coords[:,0],rrt_prune_path_coords[:,1],'cyan')
 	# if path_co is not None:
 	# 	utils.plotPath(path_co, plotter=ax, itr=itr, path_color='black')
-	if rrt_prune_smooth_path_coords is not None:
-		itr = utils.plotPath(rrt_prune_smooth_path_coords, plotter=ax, itr=itr, path_color='cyan'); itr += 1
+	if rrt_prune_path_coords is not None:
+		itr = utils.plotPath(rrt_prune_path_coords, plotter=ax, itr=-1, path_color='cyan'); itr += 1
 
 	plt.ioff()
 	# plt.show()
 
 	# plt.savefig(('./frames/%04d.png' % (itr))); itr += 1
 
-	# rrt_path_coords = utils.convertNodeList2CoordList(node_list=rrt_path)
-
-	# np.save(file='rrt_path_nodes.npy', arr=rrt_path)
-	# np.save(file='rrt_path_coords.npy', arr=rrt_path_coords)
-	# np.save(file='rrt_prune_smooth_path_coords.npy', arr=rrt_prune_smooth_path_coords)
+	np.save(file='final_rrt_path_nodes.npy', arr=rrt_path)
+	
+	rrt_path_coords = utils.convertNodeList2CoordList(node_list=rrt_path)
+	np.save(file='final_rrt_path_coords.npy', arr=rrt_path_coords)
+	
+	np.save(file='final_rrt_prune_path_coords.npy', arr=rrt_prune_path_coords)
 
 if __name__ == '__main__':
 	main()

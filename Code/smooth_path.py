@@ -241,7 +241,7 @@ def addMidPointsToPath(path):
 
 
 def main():
-	point_list = np.load('rrt_prune_smooth_path_coords.npy')
+	point_list = np.load('final_rrt_prune_path_coords.npy')
 	print("original list:", len(point_list))
 
 	(BC_x, BC_y) = bezierCurveTesting1(point_list, animate=False, write_path=None)
@@ -263,6 +263,7 @@ def main():
 			idx += 1
 
 		if idx == len(BC_x):
+			np.save(file='final_rrt_prune_smooth_path_coords.npy', arr=point_list)
 			break
 
 		point_list = addMidPointsToPath(point_list)
@@ -270,6 +271,7 @@ def main():
 		visualizeNewPath(BC_x, BC_y, point_list, animate=True, write_path='./rrt_smooth_no_obs_frames', itr=itr)
 		itr += 1
 	plt.ioff()
+	plt.show()
 
 
 if __name__ == '__main__':
